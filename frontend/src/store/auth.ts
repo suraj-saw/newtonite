@@ -10,6 +10,7 @@
 
 import { create } from "zustand";
 import type { User } from "@/types";
+import { queryClient } from "@/lib/queryClient";
 
 type AuthState = {
   isAuthenticated: boolean;
@@ -30,8 +31,14 @@ export const useAuthStore = create<AuthState>((set) => ({
    * Set user as authenticated and persist sync flag to localStorage.
    */
   setAuth: (user) => {
-    localStorage.setItem("newtonite_is_logged_in", "true");
-    set({ isAuthenticated: true, user });
+    if (user) {
+      localStorage.setItem("newtonite_is_logged_in", "true");
+      set({ isAuthenticated: true, user });
+    } else {
+      localStorage.removeItem("newtonite_is_logged_in");
+      queryClient.clear();
+      set({ isAuthenticated: false, user: null });
+    }
   },
 
   /**
@@ -40,10 +47,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUser: (user) => set({ user }),
 
   /**
-   * Purge local authentication state and clear synchronization flag.
+   * Purge local authentication state, clear synchronization flag, and purge cached queries.
    */
   logout: () => {
     localStorage.removeItem("newtonite_is_logged_in");
+    queryClient.clear();
     set({ isAuthenticated: false, user: null });
   },
 }));

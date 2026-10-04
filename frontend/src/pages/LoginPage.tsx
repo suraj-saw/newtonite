@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/api/client";
 import { useAuthStore } from "@/store/auth";
+import { queryClient } from "@/lib/queryClient";
 import type { User, Team } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,6 +74,7 @@ export function LoginPage() {
       await api.post("/auth/login", { email: values.email, password: values.password });
       setAuth(null);
       const me = await api.get<User>("/auth/me");
+      queryClient.setQueryData(["me"], me);
       setAuth(me);
       navigate("/");
     } catch (err) {
