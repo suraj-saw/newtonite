@@ -41,12 +41,12 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  subgraph frontend [Frontend (React + Vite)]
+  subgraph frontend ["Frontend (React + Vite)"]
     Pages[Pages] --> Query[TanStack Query]
     Pages --> Zustand[Auth Store]
     Query --> Client[api Fetch Client]
   end
-  subgraph backend [Backend (FastAPI Monolith)]
+  subgraph backend ["Backend (FastAPI Monolith)"]
     Routes[API Routes] --> Services[Domain Services]
     Services --> Repos[Repositories]
     Repos --> Models[SQLAlchemy Models]
